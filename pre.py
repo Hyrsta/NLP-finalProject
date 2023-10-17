@@ -5,13 +5,14 @@ from gensim.models import Word2Vec
 
 
 # 去除非汉字和停用词
-def preprocess(input_string, stop_words_list):
+def delete_stop_words(input_string, stop_words_list):
     # chinese_only = re.sub('[^\u4e00-\u9fa5]', '', input_string)
     result = []
     for word in jieba.lcut(input_string):
         if word not in stop_words_list:
             result.append(word)
     return result
+
 
 # 训练WV模型函数
 def w2v_model(text):
@@ -28,7 +29,7 @@ if __name__ == '__main__':
             i = i.strip()  # 去掉读取每一行数据的\n
             stop_words.add(i)
     query = '右肺,结节转移c1c1'
-    st = preprocess(query, stop_words)
-    test_model = wv_model(st)
+    st = delete_stop_words(query, stop_words)
+    test_model = w2v_model(st)
     print(st)
     print(test_model)
