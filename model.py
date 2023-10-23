@@ -2,30 +2,32 @@
 from gensim.models import Word2Vec
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
-import json
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 # 训练WV模型函数
 def w2v_model(sentences):
-    model = Word2Vec(sentences=sentences, vector_size=300, window=2, min_count=1, workers=4)
+    model = Word2Vec(sentences=sentences, vector_size=200, window=8, min_count=1, workers=8, epochs=2)
     print(model)
     return model
 
 
 # 计算句子的句子向量的函数
-def count_sentence_vector(tokenized_sentences, my_model, vocabulary):
+def count_sentence_vector(tokenized_sentences, my_model):
     preprocessed_text = [" ".join(tokens) for tokens in tokenized_sentences]
     # 创建并拟合TF-IDF vectorizer
     tfidf_vectorizer = TfidfVectorizer()
     tfidf_matrix = tfidf_vectorizer.fit_transform(preprocessed_text)
+
+    # 将模型里的所有词放入vocabulary变量里
+    vocabulary = my_model.wv.index_to_key
 
     # 获取TF-IDF vectorizer里面的所有单词
     tfidf_feature_names = tfidf_vectorizer.get_feature_names_out().tolist()
 
     weighted_sentence_vectors = []
     for index, sentence in enumerate(tokenized_sentences):
-        weighted_vector = np.zeros(300)     # 存储句子向量
+        weighted_vector = np.zeros(my_model.vector_size)     # 存储句子向量
         total_word_used = 0   # 存储用于计算句子向量的词数量
         for word in sentence:
             if word in vocabulary and word in tfidf_feature_names:

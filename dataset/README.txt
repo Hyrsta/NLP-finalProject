@@ -6,7 +6,3 @@ Mainfest:
 * example_gold.json: 标准答案示例
 * example_pred.json: 提交结果示例
 * README.txt: 说明文件
-
-
-
-
